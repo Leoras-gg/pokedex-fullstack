@@ -12,6 +12,13 @@ const authMiddleware = async (req, res, next) => {
 
     const token = authHeader.split(' ')[1];
 
+    // Checa se token é o token de teste
+    if (process.env.TEST_JWT && token === process.env.TEST_JWT) {
+      // Cria um usuário "fake" para testes
+      req.user = { id: 'test-user', nome: 'Teste', favoritos: [1, 25, 7] };
+      return next();
+    }
+
     // 2. Verificar se o token é válido
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 

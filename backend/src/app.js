@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import pokemonRoutes from "./routes/pokemonRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import favoritesRoutes from "./routes/favorites.js"; // <== importar rotas de favoritos
 import { errorHandler } from "./middlewares/errorHandler.js";
 
 dotenv.config();
@@ -16,10 +17,11 @@ app.get("/", (req, res) => {
   res.send("API Pokédex is running");
 });
 
-app.use("/api", pokemonRoutes);
-app.use("/api", authRoutes);
+// Rotas
+app.use("/api/pokemon", pokemonRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/favorites", favoritesRoutes); // <== registrar rotas de favoritos
 
 app.use(errorHandler);
-
 
 export default app;

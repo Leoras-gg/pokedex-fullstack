@@ -1,60 +1,35 @@
-// src/components/PokemonCard.jsx
-import React from "react";
+import "../styles/pokemon-card.css";
+import "../styles/types.css";
 
-export default function PokemonCard({
-  pokemon,
-  isFavorite,
-  onToggleFavorite
-}) {
-  if (!pokemon) return null;
+export default function PokemonCard({ pokemon, isFavorite, onToggleFavorite }) {
+  const mainType = pokemon.types?.[0] || "normal";
 
   return (
-    <div
-      style={{
-        border: "1px solid #ccc",
-        borderRadius: "8px",
-        padding: "1rem",
-        textAlign: "center"
-      }}
-    >
-      {/* ID */}
-      <div style={{ fontWeight: "bold" }}>#{pokemon.id}</div>
+    <div className={`pokemon-card type-${mainType}`}>
+      <span className="pokemon-id">#{pokemon.id}</span>
 
-      {/* Sprite */}
-      <img
-        src={pokemon.sprite}
-        alt={pokemon.name}
-        width={96}
-        height={96}
-      />
-
-      {/* Nome */}
-      <h3 style={{ textTransform: "capitalize" }}>
-        {pokemon.name}
-      </h3>
-
-      {/* Tipos */}
-      <div>
-        {pokemon.types?.map(type => (
-          <span
-            key={type}
-            style={{
-              marginRight: "0.5rem",
-              fontSize: "0.8rem"
-            }}
-          >
-            {type}
-          </span>
-        ))}
+      <div className="pokemon-image">
+        <img src={pokemon.sprite} alt={pokemon.name} />
       </div>
 
-      {/* Favorito */}
-      <button
-        onClick={() => onToggleFavorite(pokemon.id)}
-        style={{ marginTop: "0.5rem" }}
-      >
-        {isFavorite ? "★ Favorito" : "☆ Favoritar"}
-      </button>
+      <div className="pokemon-info">
+        <h3>{pokemon.name}</h3>
+
+        <div className="pokemon-types">
+          {pokemon.types.map(type => (
+            <span key={type} className={`type-badge ${type}`}>
+              {type}
+            </span>
+          ))}
+        </div>
+
+        <button
+          className={`favorite-btn ${isFavorite ? "active" : ""}`}
+          onClick={() => onToggleFavorite(pokemon.id)}
+        >
+          {isFavorite ? "★" : "☆"}
+        </button>
+      </div>
     </div>
   );
 }

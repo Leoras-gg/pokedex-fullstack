@@ -1,0 +1,27 @@
+:root {
+  --grass: #7ac74c;
+  --fire: #ee8130;
+  --water: #6390f0;
+  --electric: #f7d02c;
+  --psychic: #f95587;
+  --rock: #b6a136;
+  --ground: #e2bf65;
+  --normal: #a8a77a;
+}
+
+/* Gradientes leves */
+.type-grass {
+  background: linear-gradient(135deg, #e6f5d8, #ffffff);
+}
+
+.type-fire {
+  background: linear-gradient(135deg, #fde3d1, #ffffff);
+}
+
+.type-water {
+  background: linear-gradient(135deg, #e0ecff, #ffffff);
+}
+
+.type-electric {
+  background: linear-gradient(135deg, #fff6cc, #ffffff);
+}

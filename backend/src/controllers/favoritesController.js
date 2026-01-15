@@ -1,6 +1,6 @@
 // src/controllers/favoritesController.js
 /**
- * Controller de favoritos
+ * Controller de favorites
  *
  * Responsabilidades:
  * - Persistir apenas IDs de Pokémon no usuário
@@ -13,11 +13,11 @@
 export const getFavorites = async (req, res) => {
   try {
     // Retorna apenas um array simples de IDs
-    const favoritos = Array.isArray(req.user.favoritos)
-      ? req.user.favoritos
+    const favorites = Array.isArray(req.user.favorites)
+      ? req.user.favorites
       : [];
 
-    return res.status(200).json(favoritos);
+    return res.status(200).json(favorites);
   } catch (error) {
     console.error("Erro ao buscar favoritos:", error.message);
     return res.status(500).json({ message: "Erro ao buscar favoritos" });
@@ -33,14 +33,14 @@ export const addFavorite = async (req, res) => {
     }
 
     // Garante número
-    const id = Number(pokemonId);
+    const id = String(pokemonId);
 
-    if (!req.user.favoritos.includes(id)) {
-      req.user.favoritos.push(id);
+    if (!req.user.favorites.includes(id)) {
+      req.user.favorites.push(id);
       await req.user.save();
     }
 
-    return res.status(200).json(req.user.favoritos);
+    return res.status(200).json(req.user.favorites);
   } catch (error) {
     console.error("Erro ao adicionar favorito:", error.message);
     return res.status(500).json({ message: "Erro ao adicionar favorito" });
@@ -51,13 +51,13 @@ export const removeFavorite = async (req, res) => {
   try {
     const id = Number(req.params.id);
 
-    req.user.favoritos = req.user.favoritos.filter(
+    req.user.favorites = req.user.favorites.filter(
       favId => favId !== id
     );
 
     await req.user.save();
 
-    return res.status(200).json(req.user.favoritos);
+    return res.status(200).json(req.user.favorites);
   } catch (error) {
     console.error("Erro ao remover favorito:", error.message);
     return res.status(500).json({ message: "Erro ao remover favorito" });

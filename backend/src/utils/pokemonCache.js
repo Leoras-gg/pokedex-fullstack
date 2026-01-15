@@ -1,20 +1,13 @@
-// Cache simples em memória
-// Vive enquanto o processo Node estiver ativo
-
-let pokemonCache = null;
+let cache = null;
 
 /**
- * Retorna o cache atual
- * @returns {Array|null}
+ * Cache simples em memória
+ * Vive enquanto o servidor estiver rodando
  */
-export function getPokemonCache() {
-  return pokemonCache;
-}
+export const getPokemonCache = () => {
+  return cache;
+};
 
-/**
- * Armazena os pokémons em cache
- * @param {Array} data
- */
-export function setPokemonCache(data) {
-  pokemonCache = data;
-}
+export const setPokemonCache = (data) => {
+  cache = data;
+};

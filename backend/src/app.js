@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+
 import pokemonRoutes from "./routes/pokemonRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import favoritesRoutes from "./routes/favorites.js"; // <== importar rotas de favoritos
@@ -12,10 +13,6 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-
-app.get("/", (req, res) => {
-  res.send("API Pokédex is running");
-});
 
 // Rotas
 app.use("/api/pokemon", pokemonRoutes);

@@ -1,13 +1,22 @@
-// src/routes/favorites.js
-import express from 'express';
-import authMiddleware from '../middlewares/authMiddleware.js';
-import { addFavorite, getFavorites, removeFavorite } from '../controllers/favoritesController.js';
+import { Router } from "express";
+import authMiddleware from "../middlewares/authMiddleware.js";
+import {
+  getFavorites,
+  toggleFavorite
+} from "../controllers/favoritesController.js";
 
-const router = express.Router();
+const router = Router();
 
-// Rota protegida: só usuários autenticados podem acessar
-router.post('/add', authMiddleware, addFavorite);
-router.get('/', authMiddleware, getFavorites);
-router.delete('/:id', authMiddleware, removeFavorite);
+/**
+ * GET /api/favorites
+ * Retorna apenas IDs
+ */
+router.get("/", authMiddleware, getFavorites);
+
+/**
+ * POST /api/favorites/add
+ * Toggle de favorito
+ */
+router.post("/add", authMiddleware, toggleFavorite);
 
 export default router;

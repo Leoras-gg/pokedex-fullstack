@@ -1,14 +1,12 @@
 import { Router } from "express";
-import {
-  createPokemon,
-  getAllPokemons
-} from "../controllers/pokemonController.js";
-import validatePokemon from "../middlewares/validatePokemon.js";
-
+import { getAllPokemons } from "../controllers/pokemonController.js";
 
 const router = Router();
 
-router.post("/pokemons", validatePokemon, createPokemon);
-router.get("/pokemons", getAllPokemons);
+/**
+ * GET /api/pokemon/all
+ * Retorna TODOS os Pokémons
+ */
+router.get("/all", getAllPokemons);
 
 export default router;

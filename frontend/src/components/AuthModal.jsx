@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { loginRequest, registerRequest } from "../services/authService";
-import "./AuthModal.css";
+import "../styles/global.css";
 
 export default function AuthModal({ onClose }) {
   const [mode, setMode] = useState("login");

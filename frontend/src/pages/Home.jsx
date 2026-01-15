@@ -28,6 +28,12 @@ export default function Home() {
 
   const [favorites, setFavorites] = useState([]);
 
+function openAuthModal() {
+  console.log("ABRINDO MODAL");
+  setShowAuth(true);
+}
+
+
   // ============================
   // 🔐 Favoritos do usuário
   // ============================
@@ -84,7 +90,7 @@ export default function Home() {
         setFilterType={value => setType(value)}
         limit={limit}
         setLimit={value => setLimit(Number(value))}
-        onLoginClick={() => setShowAuth(true)}
+        onLoginClick={openAuthModal}
       />
 
       {/* MODAL DE LOGIN / REGISTRO */}

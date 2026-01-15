@@ -1,16 +1,16 @@
 // src/components/Navbar.jsx
-import { useAuth } from "../context/useAuth";
+//import { useAuth } from "../hooks/useAuth";
 
 
 export default function Navbar({ 
-  onOpenAuth,
+  //onOpenAuth,
   searchText,
   setSearchText,
   setFilterType,
   limit,
   setLimit
 }) {
-  const { isAuthenticated, logout } = useAuth();
+  //const { isAuthenticated, logout } = useAuth();
   
   return (
     <nav className="navbar">
@@ -45,7 +45,10 @@ export default function Navbar({
         <option value={40}>40</option>
       </select>
 
-      {!isAuthenticated ? (
+      <button onClick={null}>Login / Registro</button>
+
+
+      {/* {!isAuthenticated ? (
         <button onClick={onOpenAuth}>
           Login / Registro
         </button>
@@ -53,7 +56,7 @@ export default function Navbar({
         <button onClick={logout}>
           Logout
         </button>
-      )}
+      )} */}
     </nav>
   );
     </nav>

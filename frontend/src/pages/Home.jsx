@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { usePokemons } from "../hooks/usePokemons";
 import Navbar from "../components/Navbar";
-import AuthModal from "../components/AuthModal";
+//import AuthModal from "../components/AuthModal";
 import PokemonCard from "../components/PokemonCard";
 
 /**

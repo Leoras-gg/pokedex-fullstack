@@ -60,3 +60,57 @@ body {
   right: 8px;
 }
 
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.auth-modal {
+  background: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  width: 320px;
+  position: relative;
+}
+
+.auth-modal h2 {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.auth-modal input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+.auth-modal button {
+  width: 100%;
+  padding: 10px;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.auth-switch span {
+  color: blue;
+  cursor: pointer;
+}
+
+.auth-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border: none;
+  background: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+

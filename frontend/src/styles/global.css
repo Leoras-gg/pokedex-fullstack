@@ -19,8 +19,6 @@ body {
   min-height: 100vh;
 }
 
-/* src/styles/global.css */
-
 .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -34,30 +32,6 @@ body {
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-}
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal {
-  background: #fff;
-  padding: 24px;
-  border-radius: 8px;
-  width: 320px;
-  position: relative;
-}
-
-.close-btn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
 }
 
 .auth-overlay {

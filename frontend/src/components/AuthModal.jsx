@@ -36,6 +36,8 @@ export default function AuthModal({ onClose }) {
       setError(err.message);
     } finally {
       setLoading(false);
+      setForm({ name: "", email: form.email, password: "" });
+
     }
   }
 

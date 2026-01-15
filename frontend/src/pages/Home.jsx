@@ -28,8 +28,26 @@ export default function Home() {
 
   const [favorites, setFavorites] = useState([]);
 
+  // ============================
+  // 🔐 Estado de autenticação
+  // ============================
+
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+  return !!localStorage.getItem("token");
+});
+
+  function handleLoginSuccess() {
+    setIsAuthenticated(true);
+    setShowAuth(false);
+  }
+
+  function handleLogout() {
+    localStorage.removeItem("token");
+    setFavorites([]);
+    setIsAuthenticated(false);
+  }
+
 function openAuthModal() {
-  console.log("ABRINDO MODAL");
   setShowAuth(true);
 }
 
@@ -91,12 +109,18 @@ function openAuthModal() {
         limit={limit}
         setLimit={value => setLimit(Number(value))}
         onLoginClick={openAuthModal}
+        isAuthenticated={isAuthenticated}
+        onLogoutClick={handleLogout}
       />
 
       {/* MODAL DE LOGIN / REGISTRO */}
       {showAuth && (
-        <AuthModal onClose={() => setShowAuth(false)} />
-      )}
+  <AuthModal
+    onClose={() => setShowAuth(false)}
+    onLoginSuccess={handleLoginSuccess}
+  />
+)}
+
 
       {/* GRID */}
       <div className="grid-container">

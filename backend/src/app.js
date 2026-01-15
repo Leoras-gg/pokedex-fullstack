@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 // Rotas
-app.use("/api/pokemon", pokemonRoutes);
+app.use("/api/pokemons", pokemonRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/favorites", favoritesRoutes); // <== registrar rotas de favoritos
 

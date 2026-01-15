@@ -1,14 +1,20 @@
 // src/components/Navbar.jsx
-import React from "react";
+import { useAuth } from "../context/useAuth";
 
-export default function Navbar({
+
+export default function Navbar({ 
+  onOpenAuth,
   searchText,
   setSearchText,
   setFilterType,
   limit,
   setLimit
 }) {
+  const { isAuthenticated, logout } = useAuth();
+  
   return (
+    <nav className="navbar">
+    <h1>Pokédex</h1>
     <nav style={{ padding: "1rem", borderBottom: "1px solid #ddd" }}>
       <input
         type="text"
@@ -38,6 +44,18 @@ export default function Navbar({
         <option value={20}>20</option>
         <option value={40}>40</option>
       </select>
+
+      {!isAuthenticated ? (
+        <button onClick={onOpenAuth}>
+          Login / Registro
+        </button>
+      ) : (
+        <button onClick={logout}>
+          Logout
+        </button>
+      )}
+    </nav>
+  );
     </nav>
   );
 }

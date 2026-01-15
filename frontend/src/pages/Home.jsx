@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { usePokemons } from "../hooks/usePokemons";
 import Navbar from "../components/Navbar";
+import AuthModal from "../components/AuthModal";
 import PokemonCard from "../components/PokemonCard";
 
 /**
@@ -9,6 +10,8 @@ import PokemonCard from "../components/PokemonCard";
  * Toda regra de negócio vive no hook.
  */
 export default function Home() {
+  const [showAuth, setShowAuth] = useState(false);
+
   const {
     pokemons,
     pagination,
@@ -25,23 +28,29 @@ export default function Home() {
 
   const [favorites, setFavorites] = useState([]);
 
-  // 🔐 Favoritos
+  // ============================
+  // 🔐 Favoritos do usuário
+  // ============================
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
+  const token = localStorage.getItem("token");
+  if (!token) return;
 
-    fetch("http://localhost:3001/api/favorites", {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => res.json())
-      .then(data => setFavorites(Array.isArray(data) ? data : []))
-      .catch(() => setFavorites([]));
-  }, []);
+  fetch("http://localhost:3001/api/favorites", {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+    .then(res => res.json())
+    .then(data => setFavorites(Array.isArray(data) ? data : []))
+    .catch(() => setFavorites([]));
+}, []);
 
+
+  // ============================
+  // ⭐ Toggle favorito
+  // ============================
   async function toggleFavorite(pokemonId) {
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("Faça login para favoritar");
+      setShowAuth(true);
       return;
     }
 
@@ -61,39 +70,47 @@ export default function Home() {
     setFavorites(Array.isArray(data) ? data : []);
   }
 
-  // ⏳ Loading
+  // ⏳ Loading global
   if (loading) {
     return <p>Carregando Pokémons...</p>;
   }
 
   return (
     <div>
+      {/* NAVBAR */}
       <Navbar
         searchText={search}
         setSearchText={value => setSearch(value)}
         setFilterType={value => setType(value)}
         limit={limit}
         setLimit={value => setLimit(Number(value))}
+        onOpenAuth={() => setShowAuth(true)}
       />
 
+      {/* MODAL DE LOGIN / REGISTRO */}
+      {showAuth && (
+        <AuthModal onClose={() => setShowAuth(false)} />
+      )}
+
+      {/* GRID */}
       <div className="grid-container">
-  {pokemons.length === 0 && !loading && (
-    <p style={{ textAlign: "center", width: "100%" }}>
-      Nenhum Pokémon encontrado.
-    </p>
-  )}
+        {pokemons.length === 0 && !loading && (
+          <p style={{ textAlign: "center", width: "100%" }}>
+            Nenhum Pokémon encontrado.
+          </p>
+        )}
 
-  {pokemons.map(pokemon => (
-    <PokemonCard
-      key={pokemon.id}
-      pokemon={pokemon}
-      isFavorite={favorites.includes(pokemon.id)}
-      onToggleFavorite={toggleFavorite}
-    />
-  ))}
-</div>
+        {pokemons.map(pokemon => (
+          <PokemonCard
+            key={pokemon.id}
+            pokemon={pokemon}
+            isFavorite={favorites.includes(pokemon.id)}
+            onToggleFavorite={toggleFavorite}
+          />
+        ))}
+      </div>
 
-
+      {/* PAGINAÇÃO */}
       <div className="pagination">
         <button
           disabled={page === 1}

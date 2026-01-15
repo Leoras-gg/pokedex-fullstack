@@ -22,7 +22,7 @@ const authMiddleware = async (req, res, next) => {
     // ============================
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const userId = decoded.userId || decoded.id;
+    const userId = decoded.userId;
 
     if (!userId) {
       return res.status(401).json({ message: "Token inválido" });
@@ -31,7 +31,7 @@ const authMiddleware = async (req, res, next) => {
     // ============================
     // 4️⃣ Usuário
     // ============================
-    const user = await User.findById(userId).select("-password");
+    const user = await User.findById(userId);
 
     if (!user) {
       return res.status(401).json({ message: "Usuário não encontrado" });

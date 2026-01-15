@@ -49,7 +49,7 @@ export const addFavorite = async (req, res) => {
 
 export const removeFavorite = async (req, res) => {
   try {
-    const id = Number(req.params.id);
+    const id = String(req.params.id);
 
     req.user.favorites = req.user.favorites.filter(
       favId => favId !== id

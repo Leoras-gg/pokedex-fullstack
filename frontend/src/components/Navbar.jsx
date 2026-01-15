@@ -8,7 +8,8 @@ export default function Navbar({
   setSearchText,
   setFilterType,
   limit,
-  setLimit
+  setLimit,
+  onLogicClick
 }) {
   //const { isAuthenticated, logout } = useAuth();
   
@@ -45,7 +46,7 @@ export default function Navbar({
         <option value={40}>40</option>
       </select>
 
-      <button onClick={null}>Login / Registro</button>
+      <button onClick={onLogicClick}>Login / Registro</button>
 
 
       {/* {!isAuthenticated ? (

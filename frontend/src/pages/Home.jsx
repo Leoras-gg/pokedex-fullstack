@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { usePokemons } from "../hooks/usePokemons";
 import Navbar from "../components/Navbar";
-//import AuthModal from "../components/AuthModal";
+import AuthModal from "../components/AuthModal";
 import PokemonCard from "../components/PokemonCard";
 
 /**
@@ -84,7 +84,7 @@ export default function Home() {
         setFilterType={value => setType(value)}
         limit={limit}
         setLimit={value => setLimit(Number(value))}
-        onOpenAuth={() => setShowAuth(true)}
+        onLoginClick={() => setShowAuth(true)}
       />
 
       {/* MODAL DE LOGIN / REGISTRO */}

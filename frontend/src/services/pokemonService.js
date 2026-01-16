@@ -1,7 +1,8 @@
 // src/services/pokemonService.js
 
 // URL base da API do backend que retorna todos os Pokémons
-const API_URL = "http://localhost:3001/api/pokemons";
+const API_URL = `${import.meta.env.VITE_API_URL}/api/pokemons`;
+
 
 /**
  * fetchPokemons - Busca todos os Pokémons do backend

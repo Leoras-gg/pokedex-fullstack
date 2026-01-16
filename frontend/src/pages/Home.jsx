@@ -42,6 +42,7 @@ export default function Home() {
   const [showAuth, setShowAuth] = useState(false);         // controla modal de login/registro
   const [selectedPokemon, setSelectedPokemon] = useState(null); // Pokémon selecionado para modal
   const [showModal, setShowModal] = useState(false);       // controla modal de detalhes do Pokémon
+  
 
   // ============================
   // 🔹 Ref de áudio
@@ -56,7 +57,12 @@ export default function Home() {
     if (!token) return setShowAuth(true); // se não logado, abre modal de login
 
     const method = favorites.includes(String(pokemonId)) ? "DELETE" : "POST";
-    const url = `http://localhost:3001/api/favorites${method === "DELETE" ? `/${pokemonId}` : "/add"}`;
+    const API_BASE = import.meta.env.VITE_API_URL;
+
+const url = `${API_BASE}/api/favorites${
+  method === "DELETE" ? `/${pokemonId}` : "/add"
+}`;
+
 
     const res = await fetch(url, {
       method,

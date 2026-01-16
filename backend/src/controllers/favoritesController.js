@@ -25,6 +25,9 @@ export const getFavorites = async (req, res) => {
 };
 
 export const addFavorite = async (req, res) => {
+  console.log("User no controller:", req.user);
+  console.log("Favorites atuais:", req.user.favorites);
+
   try {
     const { pokemonId } = req.body;
 
@@ -32,8 +35,14 @@ export const addFavorite = async (req, res) => {
       return res.status(400).json({ message: "pokemonId é obrigatório" });
     }
 
-    // Garante número
     const id = String(pokemonId);
+
+    // ==========================
+    // Proteção: garante que favorites seja array
+    // ==========================
+    if (!Array.isArray(req.user.favorites)) {
+      req.user.favorites = [];
+    }
 
     if (!req.user.favorites.includes(id)) {
       req.user.favorites.push(id);
@@ -47,9 +56,15 @@ export const addFavorite = async (req, res) => {
   }
 };
 
+
 export const removeFavorite = async (req, res) => {
   try {
     const id = String(req.params.id);
+
+    // Proteção
+    if (!Array.isArray(req.user.favorites)) {
+      req.user.favorites = [];
+    }
 
     req.user.favorites = req.user.favorites.filter(
       favId => favId !== id
@@ -63,3 +78,4 @@ export const removeFavorite = async (req, res) => {
     return res.status(500).json({ message: "Erro ao remover favorito" });
   }
 };
+

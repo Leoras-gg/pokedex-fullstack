@@ -1,5 +1,8 @@
 // src/components/Navbar.jsx
 
+import "../styles/navbar.css";        // Estilos da navbar
+import pokeball from "../assets/type-icons/pokeball.svg";
+
 /**
  * Componente Navbar
  * -----------------
@@ -33,10 +36,16 @@ export default function Navbar({
   return (
     <nav className="navbar">
       {/* Título / Logo */}
-      <h1>Pokédex</h1>
-
+      <div>
+      <h1>Pokédex interativa</h1>
+      <img
+          src={pokeball}
+          alt="Pokéball"
+          className="navbar-logo"
+        />
+      </div>
       {/* Controles da barra */}
-      <div style={{ padding: "1rem", borderBottom: "1px solid #ddd" }}>
+      <div>
         
         {/* Input de busca */}
         <input
@@ -44,19 +53,29 @@ export default function Navbar({
           placeholder="Buscar por nome ou ID"
           value={searchText}
           onChange={e => setSearchText(e.target.value)}
-          style={{ marginRight: "1rem" }}
         />
 
         {/* Select de filtro por tipo */}
         <select onChange={e => setFilterType(e.target.value)}>
-          <option value="">Todos os tipos</option>
-          <option value="grass">Planta</option>
-          <option value="fire">Fogo</option>
-          <option value="water">Água</option>
-          <option value="electric">Elétrico</option>
-          <option value="psychic">Psíquico</option>
-          <option value="rock">Pedra</option>
-          <option value="ground">Terra</option>
+          <option value="">All Types</option>
+          <option value="normal">Normal</option>
+          <option value="grass">Grass</option>
+          <option value="fire">Fire</option>
+          <option value="water">Water</option>
+          <option value="electric">Electric</option>
+          <option value="ice">Ice</option>
+          <option value="fighting">Fighting</option>
+          <option value="poison">Poison</option>
+          <option value="ground">Ground</option>
+          <option value="flying">Flying</option>
+          <option value="psychic">Psychic</option>
+          <option value="bug">Bug</option>
+          <option value="rock">Rock</option>
+          <option value="ghost">Ghost</option>
+          <option value="dragon">Dragon</option>
+          <option value="dark">Dark</option>
+          <option value="steel">Steel</option>
+          <option value="fairy">Fairy</option>
         </select>
 
         {/* Select de quantidade por página */}
@@ -67,7 +86,15 @@ export default function Navbar({
         >
           <option value={10}>10</option>
           <option value={20}>20</option>
+          <option value={30}>30</option>
           <option value={40}>40</option>
+          <option value={50}>50</option>
+          <option value={100}>100</option>
+          <option value={200}>200</option>
+          <option value={300}>300</option>
+          <option value={400}>400</option>
+          <option value={500}>500</option>
+          <option value={1000}>1000</option>
         </select>
 
         {/* Botão de login/registro ou logout */}

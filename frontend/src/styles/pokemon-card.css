@@ -98,15 +98,31 @@
    ============================== */
 .favorite-btn {
   cursor: pointer;
-  font-size: 1.3rem;
-  color: #ccc; /* cinza padrão */
+  font-size: 1.5rem;
   background: none;
   border: none;
-  transition: color 0.2s;
+
+  /* estrela inativa mais visível */
+  color: #0a0303;
+
+
+  transition: transform 0.2s, color 0.2s;
 }
 
+/* Hover */
+.favorite-btn:hover {
+  transform: scale(1.2);
+  color: #888;
+}
+
+/* Favorito ativo */
 .favorite-btn.active {
-  color: gold; /* estrela ativa */
+  color: gold;
+  text-shadow:
+    -1px -1px 0 #b8860b,
+     1px -1px 0 #b8860b,
+    -1px  1px 0 #b8860b,
+     1px  1px 0 #b8860b;
 }
 
 .favorite-btn:hover {

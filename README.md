@@ -345,7 +345,7 @@ src/
 
 ## 🚀 Deploy
 
-- **Frontend:** Vercel
+- **Frontend:** Vercel -> https://pokedex-fullstack-eta.vercel.app/
 - **Backend:** Render
 
 ---

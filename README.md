@@ -254,205 +254,123 @@ Os dados de Pokémons são fornecidos pela PokeAPI, que possui suas próprias po
 
 # Pokédex Frontend
 
-Frontend da Pokédex construída em **React**. Este projeto consome a API de Pokémons do backend, permitindo buscar, filtrar, favoritar e visualizar detalhes de cada Pokémon.
+Frontend da **Pokédex Interativa**, desenvolvido em **React**, responsável pela interface do usuário, filtros, autenticação visual, favoritos e visualização detalhada de Pokémons.
+
+Este projeto consome uma **API própria (backend)** e também a **PokeAPI (serviço externo)** para obtenção de dados complementares.
+
+> Projeto desenvolvido **exclusivamente para fins educacionais e avaliação técnica**.
 
 ---
 
-## Tecnologias
+## 📌 Visão Geral
 
-- **React** – Biblioteca principal para construção de UI.
-- **Hooks** – `useState`, `useEffect`, `useMemo`, `useRef` para gerenciamento de estado e efeitos.
-- **Fetch API** – Para comunicação com o backend e PokéAPI.
-- **CSS puro** – Organização em arquivos dedicados (`global.css`, `pokemon-card.css`, `types.css`).
+- SPA (Single Page Application)
+- Comunicação via API REST
+- Autenticação baseada em JWT
+- Interface responsiva
+- Experiência interativa (modais, filtros, áudio)
 
 ---
 
-## Estrutura do Projeto
+## 🧩 Arquitetura (Frontend)
+
+```
+┌──────────────────────────┐
+│        React App         │
+│   (Vite + Components)    │
+└───────────┬──────────────┘
+            │
+            │ fetch / HTTP (JSON)
+            ▼
+┌──────────────────────────┐
+│      Backend API         │
+│  Node.js + Express       │
+└───────────┬──────────────┘
+            │
+            ▼
+┌──────────────────────────┐
+│        MongoDB           │
+└──────────────────────────┘
+
+┌──────────────────────────┐
+│        PokeAPI           │
+│   (API externa pública)  │
+└──────────────────────────┘
+```
+
+---
+
+## 🛠 Tecnologias Utilizadas
+
+- **React**
+- **Vite**
+- **JavaScript (ES Modules)**
+- **React Hooks**
+- **Fetch API**
+- **CSS puro**
+- **LocalStorage**
+
+---
+
+## 📁 Estrutura do Projeto
 
 ```
 src/
-├── assets/ # Imagens e ícones (types, sprites, etc.)
-├── components/ # Componentes reutilizáveis
-│ ├── AuthModal.jsx
-│ ├── Navbar.jsx
-│ ├── PokemonCard.jsx
-│ └── PokemonModal.jsx
-├── hooks/ # Custom hooks
-│ └── usePokemons.js
+├── assets/
+├── components/
+├── hooks/
 ├── pages/
-│ └── Home.jsx
-├── services/ # Chamadas HTTP
-│ ├── authService.js
-│ └── pokemonService.js
-├── styles/ # CSS do projeto
-│ ├── global.css
-│ ├── pokemon-card.css
-│ ├── types.css
-│ └── typeColors.css
-├── utils/ # Utilitários (ex.: typeIcons)
-│ └── typeIcons.js
+├── services/
+├── styles/
+├── utils/
 ├── App.jsx
 └── main.jsx
 ```
 
 ---
 
-## Componentes
+## 🌐 Integrações Externas
 
-### 1. `Home.jsx`
-- Página principal da Pokédex.
-- Integração com:
-  - **Navbar**: busca por nome/ID, filtro por tipo e controle de limite de cards.
-  - **PokemonCard**: exibe informações básicas, sprite e botão de favorito.
-  - **PokemonModal**: mostra detalhes do Pokémon (stats, habilidades, evoluções).
-  - **AuthModal**: login e registro de usuários.
+### Backend Próprio
+- API REST em Node.js
+- Autenticação JWT
+- Favoritos persistidos em banco
 
-- Gerencia estado de:
-  - Pokémons carregados (`usePokemons`)
-  - Favoritos do usuário
-  - Autenticação
-  - Modais e reprodução de sons (cry)
+### PokeAPI
+- https://pokeapi.co/
+- API pública utilizada para dados complementares
+- Não desenvolvida pelo autor
 
 ---
 
-### 2. `Navbar.jsx`
-- Barra de navegação e filtros.
-- Props principais:
-  - `searchText` e `setSearchText` – busca por nome ou ID
-  - `setFilterType` – filtro de tipo
-  - `limit` e `setLimit` – quantidade de cards por página
-  - `isAuthenticated` – estado do usuário
-  - `onLoginClick` / `onLogoutClick` – gerenciamento de sessão
+## 🚀 Deploy
+
+- **Frontend:** Vercel
+- **Backend:** Render
 
 ---
 
-### 3. `AuthModal.jsx`
-- Modal de login e registro.
-- Valida email e senha localmente.
-- Chama `authService` para login e registro.
-- Props:
-  - `onClose` – fecha o modal
-  - `onLoginSuccess` – atualiza estado de autenticação no frontend
+## ▶️ Execução Local
 
----
-
-### 4. `PokemonCard.jsx`
-- Card individual de cada Pokémon.
-- Props:
-  - `pokemon` – objeto Pokémon (`id`, `name`, `types`, `sprite`, `sound`)
-  - `isFavorite` – indica se está nos favoritos
-  - `onToggleFavorite` – adiciona/remover favorito
-  - `onClick` – abre modal com detalhes
-- Toca o **cry** do Pokémon ao clicar no card.
-- Exibe tipos com ícones, número e nome.
-
----
-
-### 5. `PokemonModal.jsx`
-- Modal detalhado do Pokémon.
-- Mostra:
-  - Sprite maior
-  - Tipos
-  - Habilidades
-  - Stats (HP, Attack, etc.)
-  - Evoluções
-- Prop `onClose` fecha a modal e interrompe o som do cry.
-
----
-
-## Hooks
-
-### `usePokemons.js`
-- Gerencia:
-  - Lista de Pokémons
-  - Filtros por tipo e busca
-  - Paginação
-- Debounce da busca (`setDebouncedSearch`)
-- Cache em memória para não refazer fetchs desnecessários
-
----
-
-## Serviços
-
-### 1. `authService.js`
-- `loginRequest(email, password)` – retorna token JWT
-- `registerRequest(name, email, password)` – cria usuário
-
-### 2. `pokemonService.js`
-- `fetchPokemons()` – busca lista completa do backend com `id`, `name`, `types`, `sprite` e `sound`.
-- `fetchPokemonDetails(pokemonId)` – busca detalhes completos da PokéAPI (stats, abilities, evolutions)
-
----
-
-## Estilos
-
-- **global.css** – fonte, reset e layouts gerais.
-- **pokemon-card.css** – layout do card, rodapé, estrela de favorito.
-- **types.css** – cores e gradientes leves por tipo de Pokémon.
-- **typeColors.css** – cores sólidas e box-shadow para ícones de tipos.
-
-- Gradientes nos cards:
-  - Base no tipo do Pokémon
-  - Cor mais clara perto do botão de favorito
-  - Cor mais escura no topo do card
-
-- Modais:
-  - `auth-modal` e `pokemon-modal` com botão de fechar no **canto superior direito**
-  - Overlay semi-transparente
-
----
-
-## Como Rodar
-
-1. Clonar o repositório:
-```
-git clone <repo-url>
-cd frontend
-``` 
-
-2. Instalar dependencias
-
-```
+```bash
 npm install
-```
-
-3. Rodar aplicação:
-
-```
 npm run dev
 ```
 
-4. Abrir no navegador
-
+Acesse:
 ```
 http://localhost:5173
 ```
-
-O frontend espera que o backend esteja rodando em http://localhost:3001.
-
-## Observações
-
--Autenticação: via JWT, armazenado no localStorage.
-
--Favoritos: só podem ser gerenciados se o usuário estiver autenticado.
-
--Som (cry): cada card pode reproduzir o som do Pokémon ao clicar.
-
--Paginação: implementada no frontend via hook usePokemons.
-
--Busca: debounce de 400ms para performance.
-
--Design: inspirado na Nintendo, cores temáticas por tipo, cards e modais modernos e responsivos.
 
 ---
 
 ## 📄 Licença
 
-Este projeto está licenciado sob a Licença MIT, permitindo uso, modificação e distribuição para fins educacionais.
+Este projeto está licenciado sob a **Licença MIT**, exclusivamente para fins educacionais.
 
 ---
 
 ## 👤 Autor
 
-Desenvolvido por Leandro Horas
+Desenvolvido por **Leandro Horas**  
 Projeto criado para estudo, aprendizado e avaliação técnica.

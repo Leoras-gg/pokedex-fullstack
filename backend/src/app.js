@@ -26,7 +26,24 @@ const app = express();
 
 // Habilita CORS (Cross-Origin Resource Sharing)
 // Permite que frontends em domínios diferentes acessem a API
-app.use(cors());
+
+app.use(cors({
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      "http://localhost:5173", //LOCAL NESTE PROJETO
+      //"https://pokedex-fullstack-eta.vercel.app" EXEMPLO DE COMO DEVE FICAR EM PROD.
+    ];
+
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
 
 // Permite que o Express interprete JSON no body das requisições
 app.use(express.json());

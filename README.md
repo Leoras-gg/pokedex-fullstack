@@ -1,97 +1,256 @@
-## Pokédex Fullstack
+# Pokédex Fullstack
 
 Projeto de teste técnico — Pokédex interativa com autenticação e favoritos.
 
-                ┌─────────────┐
-                │  Frontend   │
-                │ React App   │
-                └─────┬───────┘
-                      │
-                      │ HTTP Requests (fetch / axios)
-                      ▼
-             ┌─────────────────────┐
-             │     Express App     │  src/app.js
-             └─────────┬───────────┘
-                       │
-        ┌──────────────┴────────────────┐
-        │                               │
-        ▼                               ▼
-┌───────────────┐                ┌───────────────┐
-│  Middleware   │                │   Routes      │
-│               │                │               │
-│ authMiddleware│                │ /api/pokemons │
-│  (JWT check)  │                │ /all → getAllPokemons()
-│ errorHandler  │                │ /api/auth     │
-└───────────────┘                │ /register → register()
-                                 │ /login → login()
-                                 │ /api/favorites │
-                                 │ GET / → getFavorites()
-                                 │ POST /add → addFavorite()
-                                 │ DELETE /:id → removeFavorite()
-                                 └─────┬─────────┘
-                                       │
-                                       ▼
-                             ┌─────────────────┐
-                             │ Controllers     │
-                             │                 │
-                             │ pokemonController│
-                             │ authController  │
-                             │ favoritesController │
-                             └────────┬────────┘
-                                      │
-                                      ▼
-                             ┌─────────────────┐
-                             │  Services /     │
-                             │  Utils          │
-                             │ pokemonService  │
-                             │ pokemonCache    │
-                             └────────┬────────┘
-                                      │
-                                      ▼
-                             ┌─────────────────┐
-                             │   MongoDB       │
-                             │ (Users & Fav)   │
-                             └─────────────────┘
+## 📦 Pokédex API — Backend
 
-Descrição do Fluxo
+API REST desenvolvida em **Node.js + Express**, responsável por fornecer dados normalizados de Pokémons para o frontend através de api de terceiros, autenticação de usuários e gerenciamento de favoritos.
+A aplicação utiliza **MongoDB** como banco de dados e **JWT** para autenticação segura.
 
-Frontend faz requisições HTTP para o backend:
+Este backend foi desenvolvido **exclusivamente para fins educacionais e avaliação técnica**, como parte de um projeto fullstack.
 
-Pokémons (/api/pokemons/all)
+---
 
-Autenticação (/api/auth/register, /api/auth/login)
+## 🧠 Visão Geral da Arquitetura
 
-Favoritos (/api/favorites)
+Este backend segue uma arquitetura em camadas, separando responsabilidades de forma clara entre **rotas**, **controllers**, **services**, **middlewares** e **database**.
 
-Middleware
+### 🔷 Diagrama de Arquitetura (Backend)
 
-authMiddleware: protege rotas que precisam de login, decodificando JWT e anexando req.user.
+```
+┌────────────────────────────┐
+│        Client (Any)        │
+│  (Browser / Frontend App)  │
+└─────────────┬──────────────┘
+              │
+              │ HTTP Requests (REST)
+              ▼
+┌────────────────────────────┐
+│        Express Server      │
+│        src/app.js          │
+└─────────────┬──────────────┘
+              │
+    ┌─────────┴─────────┐
+    │                   │
+    ▼                   ▼
+┌──────────────┐   ┌──────────────┐
+│  Middlewares │   │    Routes     │
+│              │   │               │
+│ • CORS       │   │ /api/auth     │
+│ • JWT Auth   │   │ /api/pokemons │
+│ • Errors     │   │ /api/favorites│
+└──────┬───────┘   └──────┬───────┘
+       │                  │
+       ▼                  ▼
+┌─────────────────────────────────┐
+│            Controllers          │
+│                                 │
+│ • AuthController                │
+│ • PokemonController             │
+│ • FavoritesController           │
+└──────────────┬──────────────────┘
+               │
+               ▼
+┌─────────────────────────────────┐
+│             Services            │
+│                                 │
+│ • Business rules                │
+│ • Data processing               │
+│ • External API integration      │
+└──────────────┬──────────────────┘
+               │
+               ▼
+┌─────────────────────────────────┐
+│            MongoDB              │
+│        (Mongoose ODM)           │
+└─────────────────────────────────┘
+```
 
-errorHandler: captura erros não tratados e retorna JSON com status 500.
+---
 
-Controllers
+## 🛠️ Tecnologias Utilizadas
 
-pokemonController: busca todos os Pokémons com cache e normalização.
+* **Node.js**
+* **Express**
+* **MongoDB**
+* **Mongoose**
+* **JWT (JSON Web Token)**
+* **bcrypt**
+* **CORS**
+* **dotenv**
+* **ES Modules**
 
-authController: registra novos usuários e realiza login, gerando JWT.
+---
 
-favoritesController: adiciona, remove e retorna favoritos de um usuário.
+## 📂 Estrutura de Pastas
 
-Services / Utils
+```
+src/
+├── app.js                 # Configuração principal do Express
+├── server.js              # Inicialização do servidor
+├── config/
+│   └── database.js        # Conexão com MongoDB
+├── controllers/
+│   ├── authController.js
+│   ├── pokemonController.js
+│   └── favoritesController.js
+├── routes/
+│   ├── authRoutes.js
+│   ├── pokemonRoutes.js
+│   └── favorites.js
+├── middlewares/
+│   ├── authMiddleware.js
+│   └── errorHandler.js
+├── models/
+│   ├── User.js
+│   └── Favorite.js
+└── services/
+    └── pokemonService.js
+```
 
-pokemonService: faz fetch de dados detalhados da PokéAPI (sprite, tipos, cries).
+---
 
-pokemonCache: cache em memória para reduzir requisições à PokéAPI.
+## 🔐 Autenticação
 
-Banco de Dados
+A autenticação é baseada em **JWT**:
 
-MongoDB com Mongoose:
+* Login gera um token JWT
+* Token deve ser enviado no header:
 
-Usuários (User) com email, password e favorites.
+```
+Authorization: Bearer <token>
+```
 
-Senhas criptografadas via bcrypt antes de salvar.
+* Rotas protegidas utilizam `authMiddleware`
 
-JWT usado para autenticação.
+---
+
+## 📌 Endpoints Principais
+
+### 🔑 Autenticação
+
+- JWT (JSON Web Token)
+- Token enviado via header `Authorization: Bearer <token>`
+- Middleware protege rotas sensíveis (favoritos)
+
+| Método | Rota                 | Descrição              |
+| ------ | -------------------- | ---------------------- |
+| POST   | `/api/auth/register` | Registro de usuário    |
+| POST   | `/api/auth/login`    | Login e geração de JWT |
+
+---
+
+### 🧬 Pokémons
+
+| Método | Rota                | Descrição              |
+| ------ | ------------------- | ---------------------- |
+| GET    | `/api/pokemons/all` | Lista de Pokémons      |
+| GET    | `/api/pokemons/:id` | Detalhes de um Pokémon |
+
+---
+
+### ⭐ Favoritos (Protegido)
+
+| Método | Rota                 | Descrição          |
+| ------ | -------------------- | ------------------ |
+| GET    | `/api/favorites`     | Listar favoritos   |
+| POST   | `/api/favorites/add` | Adicionar favorito |
+| DELETE | `/api/favorites/:id` | Remover favorito   |
+
+---
+
+## 🌐 Integração com API Externa (PokeAPI)
+
+Este projeto **não desenvolve nem mantém** a base de dados de Pokémons.
+
+Os dados detalhados dos Pokémons são obtidos através da **PokeAPI**, uma API pública e gratuita:
+
+- 🔗 https://pokeapi.co/
+- Utilizada apenas para **consulta de dados**
+- Sem qualquer modificação ou redistribuição de conteúdo
+
+> A PokeAPI é um serviço de terceiros, utilizado neste projeto exclusivamente para fins educacionais e demonstração técnica.
+
+## 🌍 CORS
+
+A API está configurada para aceitar requisições de origens específicas:
+
+```js
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://pokedex-fullstack-eta.vercel.app"
+  ]
+}));
+```
+
+---
+
+## ⚙️ Variáveis de Ambiente (`.env`)
+
+```env
+PORT=3001
+MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/dbname
+JWT_SECRET=sua_chave_super_secreta
+```
+
+---
+
+## 🚀 Deploy
+
+* **Backend**: Render
+* **Banco de Dados**: MongoDB Atlas
+
+URL de produção:
+
+```
+https://pokedex-backend-oqge.onrender.com
+```
+
+---
+
+## 🧪 Execução Local
+
+```
+npm install
+npm run dev
+```
+
+Servidor disponivel em: 
+
+```
+https://localhost:3001
+```
+
+---
+
+## ✅ Status do Projeto
+
+* [x] API funcional
+* [x] Autenticação JWT
+* [x] MongoDB integrado
+* [x] CORS configurado
+* [x] Pronto para produção
+
+---
+
+## ⚠️ Observações Técnicas
+
+Projeto estruturado seguindo separação de responsabilidades
+
+Tratamento centralizado de erros
+
+Código orientado a clareza e manutenção
+
+Foco em boas práticas para avaliação técnica
+
+---
+
+## PokeAPI
+
+Os dados de Pokémons são fornecidos pela PokeAPI, que possui suas próprias políticas e termos de uso.
+
+---
 
 # Pokédex Frontend
 
@@ -245,21 +404,28 @@ src/
 ## Como Rodar
 
 1. Clonar o repositório:
-```bash
+```
 git clone <repo-url>
 cd frontend
+``` 
 
 2. Instalar dependencias
-```bash
+
+```
 npm install
+```
 
 3. Rodar aplicação:
 
+```
 npm run dev
+```
 
 4. Abrir no navegador
 
+```
 http://localhost:5173
+```
 
 O frontend espera que o backend esteja rodando em http://localhost:3001.
 
@@ -276,3 +442,16 @@ O frontend espera que o backend esteja rodando em http://localhost:3001.
 -Busca: debounce de 400ms para performance.
 
 -Design: inspirado na Nintendo, cores temáticas por tipo, cards e modais modernos e responsivos.
+
+---
+
+## 📄 Licença
+
+Este projeto está licenciado sob a Licença MIT, permitindo uso, modificação e distribuição para fins educacionais.
+
+---
+
+## 👤 Autor
+
+Desenvolvido por Leandro Horas
+Projeto criado para estudo, aprendizado e avaliação técnica.

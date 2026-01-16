@@ -72,27 +72,50 @@ function openAuthModal() {
   // ⭐ Toggle favorito
   // ============================
   async function toggleFavorite(pokemonId) {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setShowAuth(true);
-      return;
-    }
+  const token = localStorage.getItem("token");
+  if (!token) {
+    setShowAuth(true);
+    return;
+  }
 
-    const response = await fetch(
-      "http://localhost:3001/api/favorites/add",
-      {
+  const isAlreadyFavorite = favorites.includes(String(pokemonId)); // ← usar string para consistência
+
+  try {
+    let response;
+
+    if (isAlreadyFavorite) {
+      // -----------------------------
+      // REMOVER FAVORITO
+      // -----------------------------
+      response = await fetch(`http://localhost:3001/api/favorites/${pokemonId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } else {
+      // -----------------------------
+      // ADICIONAR FAVORITO
+      // -----------------------------
+      response = await fetch("http://localhost:3001/api/favorites/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ pokemonId })
-      }
-    );
+        body: JSON.stringify({ pokemonId }),
+      });
+    }
 
+    // Atualiza lista de favoritos com o que o backend retorna
     const data = await response.json();
     setFavorites(Array.isArray(data) ? data : []);
+  } catch (err) {
+    console.error("Erro ao atualizar favoritos:", err);
   }
+}
+
+
 
   // ⏳ Loading global
   if (loading) {
@@ -134,7 +157,7 @@ function openAuthModal() {
           <PokemonCard
             key={pokemon.id}
             pokemon={pokemon}
-            isFavorite={favorites.includes(pokemon.id)}
+            isFavorite={favorites.includes(String(pokemon.id))}
             onToggleFavorite={toggleFavorite}
           />
         ))}

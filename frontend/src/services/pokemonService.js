@@ -17,7 +17,8 @@ export async function fetchPokemons() {
       id: Number(pokemon.id),
       name: pokemon.name,
       types: Array.isArray(pokemon.types) ? pokemon.types : [],
-      sprite: pokemon.sprite || null
+      sprite: pokemon.sprite || null,
+      sound: pokemon.sound // 🔊 adiciona o cry
     }));
   } catch (error) {
     console.error("Erro no pokemonService:", error);

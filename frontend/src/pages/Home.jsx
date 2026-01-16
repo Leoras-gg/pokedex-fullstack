@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { usePokemons } from "../hooks/usePokemons";
 import Navbar from "../components/Navbar";
 import AuthModal from "../components/AuthModal";
@@ -7,7 +7,7 @@ import PokemonModal from "../components/PokemonModal";
 import { fetchPokemonDetails } from "../services/pokemonService";
 
 export default function Home() {
-  const { pokemons, pagination, loading, page, setPage, limit, setLimit, search, setSearch, type, setType } = usePokemons();
+  const { pokemons, pagination, loading, page, setPage, limit, setLimit, search, setSearch, setType } = usePokemons();
 
   const [favorites, setFavorites] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem("token"));
@@ -15,6 +15,9 @@ export default function Home() {
 
   const [selectedPokemon, setSelectedPokemon] = useState(null);
   const [showModal, setShowModal] = useState(false);
+
+  // ===== Refs =====
+  const audioRef = useRef(null); // 🔊 controle do cry
 
   // ===== Favoritos =====
   const toggleFavorite = async (pokemonId) => {
@@ -39,22 +42,44 @@ export default function Home() {
 
   // ===== Modal =====
   const handleOpenModal = async (pokemon) => {
+    // Fecha som anterior
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+
+    // Abre modal com loading
     setSelectedPokemon({ ...pokemon, abilities: [], stats: {}, evolutions: [], loading: true });
     setShowModal(true);
 
+    // Busca detalhes
     const detailedPokemon = await fetchPokemonDetails(pokemon.id);
     setSelectedPokemon({ ...pokemon, ...detailedPokemon, loading: false });
+
+    // Toca o cry
+    if (pokemon.sound) {
+      const audio = new Audio(pokemon.sound);
+      audioRef.current = audio;
+      audio.play().catch(err => console.error("Erro ao tocar cry:", err));
+    }
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedPokemon(null);
+
+    // Para o som
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
   };
 
   if (loading) return <p>Carregando Pokémons...</p>;
 
   return (
     <div>
+      {/* Navbar */}
       <Navbar
         searchText={search}
         setSearchText={setSearch}
@@ -63,11 +88,22 @@ export default function Home() {
         setLimit={setLimit}
         onLoginClick={() => setShowAuth(true)}
         isAuthenticated={isAuthenticated}
-        onLogoutClick={() => { localStorage.removeItem("token"); setFavorites([]); setIsAuthenticated(false); }}
+        onLogoutClick={() => {
+          localStorage.removeItem("token");
+          setFavorites([]);
+          setIsAuthenticated(false);
+        }}
       />
 
-      {showAuth && <AuthModal onClose={() => setShowAuth(false)} onLoginSuccess={() => setIsAuthenticated(true)} />}
+      {/* Modal de login */}
+      {showAuth && (
+        <AuthModal
+          onClose={() => setShowAuth(false)}
+          onLoginSuccess={() => setIsAuthenticated(true)}
+        />
+      )}
 
+      {/* Grid de Pokémons */}
       <div className="grid-container">
         {pokemons.map(pokemon => (
           <PokemonCard
@@ -80,10 +116,15 @@ export default function Home() {
         ))}
       </div>
 
+      {/* Modal de detalhes */}
       {showModal && selectedPokemon && (
-        <PokemonModal pokemon={selectedPokemon} onClose={handleCloseModal} />
+        <PokemonModal
+          pokemon={selectedPokemon}
+          onClose={handleCloseModal}
+        />
       )}
 
+      {/* Paginação */}
       <div className="pagination">
         <button disabled={page === 1} onClick={() => setPage(page - 1)}>Anterior</button>
         <span>Página {page} de {pagination.totalPages}</span>

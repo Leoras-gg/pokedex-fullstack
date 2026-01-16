@@ -1,11 +1,34 @@
 import "../styles/pokemon-card.css";
 import typeIcons from "../utils/typeIcons";
 import "../styles/types.css";
-
+import { useRef } from "react";
 
 export default function PokemonCard({ pokemon, isFavorite, onToggleFavorite, onClick }) {
+  const audioRef = useRef(null);
+
+  // Função para tocar o cry
+  const playCry = () => {
+    if (!pokemon.sound) return;
+
+    // Para som anterior, se houver
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+
+    const audio = new Audio(pokemon.sound);
+    audioRef.current = audio;
+    audio.play().catch(err => console.error("Erro ao tocar cry:", err));
+  };
+
+  // Handler ao clicar no card ou na imagem
+  const handleClick = () => {
+    playCry();
+    if (onClick) onClick();
+  };
+
   return (
-    <div className="pokemon-card" onClick={onClick}>
+    <div className="pokemon-card" onClick={handleClick}>
       {/* Número */}
       <span className="pokemon-id">#{pokemon.id}</span>
 
@@ -33,7 +56,7 @@ export default function PokemonCard({ pokemon, isFavorite, onToggleFavorite, onC
         <button
           className={`favorite-btn ${isFavorite ? "active" : ""}`}
           onClick={(e) => { 
-            e.stopPropagation(); // impede abrir modal ao clicar na estrela
+            e.stopPropagation(); // impede abrir modal e tocar cry ao clicar na estrela
             onToggleFavorite(pokemon.id);
           }}
         >
@@ -43,4 +66,3 @@ export default function PokemonCard({ pokemon, isFavorite, onToggleFavorite, onC
     </div>
   );
 }
-

@@ -1,37 +1,49 @@
-.auth-overlay {
-  position: fixed;      /* fixa a modal na tela */
+.pokemon-overlay {
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.6); /* overlay escuro */
+  background: rgba(0,0,0,0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;          /* garante sobreposição */
+  z-index: 1000;
 }
 
-.auth-modal {
+.pokemon-modal {
+  position: relative; /* necessário para o botão X */
   background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  max-width: 700px;
-  width: 90%;
-  max-height: 90%;
+  border-radius: 10px;
+  padding: 2rem;
+  max-width: 800px;
+  width: 95%;
+  max-height: 90vh;
   overflow-y: auto;
-  position: relative;
-  box-shadow: 0 0 20px rgba(0,0,0,0.5);
 }
 
-.auth-close {
+.pokemon-close {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  font-size: 1.5rem;
-  background: transparent;
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
+  font-size: 2.5rem;
+  font-weight: bold;
+  background: #fff;
+  border-radius: 50%;
   border: none;
   cursor: pointer;
+  color: #333;
+  z-index: 1001;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  padding: 0;
+  transition: transform 0.2s ease;
 }
-.auth-close:hover {
-  color: #f00;
+
+.pokemon-close:hover {
+  transform: translate(50%, -50%) scale(1.2);
+  color: #ff0000;
 }

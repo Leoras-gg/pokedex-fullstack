@@ -1,3 +1,4 @@
+// src/pages/Home.jsx
 import { useState, useRef } from "react";
 import { usePokemons } from "../hooks/usePokemons";
 import Navbar from "../components/Navbar";
@@ -6,23 +7,53 @@ import PokemonCard from "../components/PokemonCard";
 import PokemonModal from "../components/PokemonModal";
 import { fetchPokemonDetails } from "../services/pokemonService";
 
+/**
+ * Home - Página principal da Pokédex
+ *
+ * Responsabilidades:
+ * - Mostrar Navbar com busca, filtro e login/logout
+ * - Listar Pokémons em grid com paginação
+ * - Gerenciar favoritos do usuário
+ * - Abrir modal de detalhes do Pokémon com cry
+ * - Abrir modal de login/registro
+ */
 export default function Home() {
-  const { pokemons, pagination, loading, page, setPage, limit, setLimit, search, setSearch, setType } = usePokemons();
+  // ============================
+  // 🔹 Hook customizado para Pokémons
+  // ============================
+  const {
+    pokemons,
+    pagination,
+    loading,
+    page,
+    setPage,
+    limit,
+    setLimit,
+    search,
+    setSearch,
+    setType
+  } = usePokemons();
 
-  const [favorites, setFavorites] = useState([]);
+  // ============================
+  // 🔹 Estados de UI
+  // ============================
+  const [favorites, setFavorites] = useState([]);          // IDs de favoritos do usuário
   const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem("token"));
-  const [showAuth, setShowAuth] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);         // controla modal de login/registro
+  const [selectedPokemon, setSelectedPokemon] = useState(null); // Pokémon selecionado para modal
+  const [showModal, setShowModal] = useState(false);       // controla modal de detalhes do Pokémon
 
-  const [selectedPokemon, setSelectedPokemon] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  // ============================
+  // 🔹 Ref de áudio
+  // ============================
+  const audioRef = useRef(null); // controla o cry do Pokémon
 
-  // ===== Refs =====
-  const audioRef = useRef(null); // 🔊 controle do cry
-
-  // ===== Favoritos =====
+  // ============================
+  // 🔹 Função para adicionar/remover favoritos
+  // ============================
   const toggleFavorite = async (pokemonId) => {
     const token = localStorage.getItem("token");
-    if (!token) return setShowAuth(true);
+    if (!token) return setShowAuth(true); // se não logado, abre modal de login
 
     const method = favorites.includes(String(pokemonId)) ? "DELETE" : "POST";
     const url = `http://localhost:3001/api/favorites${method === "DELETE" ? `/${pokemonId}` : "/add"}`;
@@ -40,7 +71,9 @@ export default function Home() {
     setFavorites(Array.isArray(data) ? data : []);
   };
 
-  // ===== Modal =====
+  // ============================
+  // 🔹 Abrir modal de detalhes
+  // ============================
   const handleOpenModal = async (pokemon) => {
     // Fecha som anterior
     if (audioRef.current) {
@@ -52,11 +85,11 @@ export default function Home() {
     setSelectedPokemon({ ...pokemon, abilities: [], stats: {}, evolutions: [], loading: true });
     setShowModal(true);
 
-    // Busca detalhes
+    // Busca detalhes do Pokémon (habilidades, stats, evoluções)
     const detailedPokemon = await fetchPokemonDetails(pokemon.id);
     setSelectedPokemon({ ...pokemon, ...detailedPokemon, loading: false });
 
-    // Toca o cry
+    // Toca o cry, se existir
     if (pokemon.sound) {
       const audio = new Audio(pokemon.sound);
       audioRef.current = audio;
@@ -64,22 +97,31 @@ export default function Home() {
     }
   };
 
+  // ============================
+  // 🔹 Fechar modal
+  // ============================
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedPokemon(null);
 
-    // Para o som
+    // Para o som do cry
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }
   };
 
+  // ============================
+  // 🔹 Loading inicial
+  // ============================
   if (loading) return <p>Carregando Pokémons...</p>;
 
+  // ============================
+  // 🔹 Render
+  // ============================
   return (
     <div>
-      {/* Navbar */}
+      {/* Navbar com busca, filtro e login/logout */}
       <Navbar
         searchText={search}
         setSearchText={setSearch}
@@ -95,7 +137,7 @@ export default function Home() {
         }}
       />
 
-      {/* Modal de login */}
+      {/* Modal de login/registro */}
       {showAuth && (
         <AuthModal
           onClose={() => setShowAuth(false)}
@@ -116,7 +158,7 @@ export default function Home() {
         ))}
       </div>
 
-      {/* Modal de detalhes */}
+      {/* Modal de detalhes do Pokémon */}
       {showModal && selectedPokemon && (
         <PokemonModal
           pokemon={selectedPokemon}

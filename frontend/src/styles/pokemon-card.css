@@ -1,23 +1,28 @@
+/* ==============================
+   Card de Pokémon
+   ============================== */
 .pokemon-card {
-  position: relative;
+  position: relative;                /* necessário para posicionar ID e tipos */
   width: 200px;
-  height: 250px; /* quadrado maior */
-  background: #f5f5f5;
+  height: 250px;                     /* altura maior para acomodar sprite e rodapé */
+  background: #f5f5f5;               /* cor de fundo neutra inicial */
   border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1); /* sombra sutil */
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 10px;
   box-sizing: border-box;
-  transition: transform 0.2s;
+  transition: transform 0.2s;        /* animação leve ao hover */
 }
 
 .pokemon-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-5px);       /* efeito de elevação ao passar o mouse */
 }
 
-/* Número no canto superior esquerdo */
+/* ==============================
+   Número do Pokémon no canto superior esquerdo
+   ============================== */
 .pokemon-id {
   position: absolute;
   top: 8px;
@@ -27,32 +32,39 @@
   font-size: 0.9rem;
 }
 
-/* Tipos no canto superior direito */
+/* ==============================
+   Tipos do Pokémon no canto superior direito
+   ============================== */
 .pokemon-types {
   position: absolute;
   top: 8px;
   right: 8px;
   display: flex;
-  gap: 4px;
+  gap: 4px; /* espaçamento entre ícones */
 }
 
+/* ==============================
+   Ícones de tipo
+   ============================== */
 .type-icon {
   width: 46px;
   height: 40px;
   border-radius: 50%;
-  background: #eee;
+  background: #eee;      /* cor neutra padrão para placeholder */
   padding: 6px;
   transition: transform 0.2s, filter 0.2s;
 }
 
 .type-icon:hover {
-  transform: scale(1.2);
-  filter: saturate(150%);
+  transform: scale(1.2); /* leve zoom */
+  filter: saturate(150%); /* aumenta saturação */
 }
 
-/* Sprite centralizado */
+/* ==============================
+   Sprite do Pokémon centralizado
+   ============================== */
 .pokemon-image {
-  flex: 1;
+  flex: 1; /* ocupa espaço restante */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -60,11 +72,13 @@
 }
 
 .pokemon-image img {
-  max-width: 180x;
+  max-width: 180px;  /* corrigido de '180x' para '180px' */
   max-height: 180px;
 }
 
-/* Rodapé: Nome + estrela */
+/* ==============================
+   Rodapé do card: nome + estrela de favorito
+   ============================== */
 .pokemon-footer {
   display: flex;
   align-items: center;
@@ -76,21 +90,28 @@
 .pokemon-name {
   margin: 0;
   font-size: 1.1rem;
-  text-transform: capitalize;
+  text-transform: capitalize; /* primeira letra maiúscula */
 }
 
+/* ==============================
+   Botão de favorito
+   ============================== */
 .favorite-btn {
   cursor: pointer;
   font-size: 1.3rem;
-  color: #ccc;
+  color: #ccc; /* cinza padrão */
   background: none;
   border: none;
   transition: color 0.2s;
 }
 
 .favorite-btn.active {
-  color: gold;
+  color: gold; /* estrela ativa */
 }
+
 .favorite-btn:hover {
-  color: orange;
+  color: orange; /* feedback visual */
 }
+/* ==============================
+   Fim do arquivo pokemon-card.css
+   ============================== */

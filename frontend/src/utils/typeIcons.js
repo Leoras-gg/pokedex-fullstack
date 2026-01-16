@@ -1,3 +1,8 @@
+// ==============================
+// Importação dos ícones de tipos
+// Cada SVG representa o tipo correspondente de Pokémon
+// Os arquivos devem estar dentro de src/assets/type-icons/
+// ==============================
 import normal from "../assets/type-icons/normal.svg";
 import grass from "../assets/type-icons/grass.svg";
 import fire from "../assets/type-icons/fire.svg";
@@ -17,6 +22,11 @@ import dark from "../assets/type-icons/dark.svg";
 import steel from "../assets/type-icons/steel.svg";
 import fairy from "../assets/type-icons/fairy.svg";
 
+// ==============================
+// Mapeamento tipo => ícone
+// Permite acessar facilmente o SVG pelo nome do tipo
+// Ex: typeIcons["fire"] retorna o ícone de fogo
+// ==============================
 const typeIcons = {
   normal,
   grass,
@@ -38,4 +48,5 @@ const typeIcons = {
   fairy
 };
 
+// Exporta para uso em componentes como PokemonCard
 export default typeIcons;

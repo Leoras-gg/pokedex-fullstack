@@ -1,70 +1,91 @@
 /* src/styles/global.css */
 
+/* ==============================
+   Fonte global
+   ============================== */
 /* Importando a fonte Orbitron do Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
 
-
-
-/* Reset mínimo e previsível */
+/* ==============================
+   Reset mínimo e previsível
+   ============================== */
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  box-sizing: border-box; /* Inclui padding e border na largura total */
 }
 
-/* Aplicando a fonte globalmente */
+/* ==============================
+   Estilo global do HTML e body
+   ============================== */
 html,
 body {
-  font-family: 'Orbitron', sans-serif;
+  font-family: 'Orbitron', sans-serif; /* Fonte principal */
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-    background-color: #f6f8fc;
-  color: #000;
+  background-color: #f6f8fc; /* cor de fundo suave */
+  color: #000; /* cor do texto padrão */
 }
 
-
+/* ==============================
+   Container principal do app
+   ============================== */
 .app-container {
-  min-height: 100vh;
+  min-height: 100vh; /* garante que ocupe toda a altura da tela */
 }
 
+/* ==============================
+   Grid de cards de Pokémon
+   ============================== */
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 1rem;
-  padding: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* colunas responsivas */
+  gap: 1rem; /* espaçamento entre cards */
+  padding: 1rem; /* espaçamento interno */
 }
 
+/* ==============================
+   Paginação
+   ============================== */
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
+  gap: 1rem; /* espaço entre botões */
   padding: 1rem;
 }
 
+/* ==============================
+   Overlay das modais de login e Pokémon
+   ============================== */
 .auth-overlay {
   position: fixed;
-  inset: 0; /* top, left, right, bottom = 0 */
-  background: rgba(0,0,0,0.5);
+  inset: 0; /* top, right, bottom, left = 0 */
+  background: rgba(0,0,0,0.5); /* fundo semitransparente */
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 1000; /* garante estar acima do conteúdo */
 }
 
+/* ==============================
+   Modal de autenticação
+   ============================== */
 .auth-modal {
-  position: relative;  /* necessário para o X */
+  position: relative; /* necessário para posicionar o X */
   background: #fff;
   border-radius: 10px;
   padding: 2rem;
   max-width: 400px;
   width: 90%;
   max-height: 90vh;
-  overflow-y: auto;
+  overflow-y: auto; /* permite rolagem se o conteúdo for maior que a tela */
 }
 
-/* X no canto superior direito absoluto em relação à modal */
+/* ==============================
+   Botão X de fechar no canto superior direito
+   ============================== */
 .auth-close {
   position: absolute;
   top: 15px;
@@ -85,10 +106,13 @@ body {
 }
 
 .auth-close:hover {
-  transform: translate(50%, -50%) scale(1.2);
+  transform: translate(50%, -50%) scale(1.2); /* aumenta levemente ao passar mouse */
   color: red;
 }
 
+/* ==============================
+   Cabeçalho e inputs do modal
+   ============================== */
 .auth-modal h2 {
   margin-bottom: 16px;
   text-align: center;
@@ -105,6 +129,9 @@ body {
   padding: 10px;
 }
 
+/* ==============================
+   Switch de login/registro
+   ============================== */
 .auth-switch {
   text-align: center;
   margin-top: 10px;
@@ -115,27 +142,31 @@ body {
   cursor: pointer;
 }
 
-/* Botão de fechar padrão para todas as modais */
+/* ==============================
+   Botão de fechar genérico para todas as modais
+   ============================== */
 .modal-close {
   position: absolute;
-  top: 10px;          /* distância do topo */
-  right: 10px;        /* distância da direita */
-  font-size: 2rem;    /* aumenta o tamanho do X */
+  top: 10px;
+  right: 10px;
+  font-size: 2rem;
   font-weight: bold;
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #333;        /* cor do X */
-  z-index: 1001;      /* garante que fique acima do conteúdo da modal */
+  color: #333;
+  z-index: 1001;
   transition: transform 0.2s ease;
 }
 
 .modal-close:hover {
   transform: scale(1.2);
-  color: #ff0000;      /* muda a cor ao passar o mouse */
+  color: #ff0000;
 }
 
-/* Overlay da modal */
+/* ==============================
+   Overlay genérico de modal
+   ============================== */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -149,9 +180,11 @@ body {
   z-index: 1000;
 }
 
-/* Container da modal */
+/* ==============================
+   Container genérico de modal
+   ============================== */
 .modal-container {
-  position: relative;  /* necessário para posicionar o X */
+  position: relative; /* necessário para posicionar o X */
   background: #fff;
   border-radius: 10px;
   padding: 2rem;
@@ -160,4 +193,3 @@ body {
   max-height: 90vh;
   overflow-y: auto;
 }
-

@@ -1,210 +1,93 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { usePokemons } from "../hooks/usePokemons";
 import Navbar from "../components/Navbar";
 import AuthModal from "../components/AuthModal";
 import PokemonCard from "../components/PokemonCard";
-import PokemonModal from "../components/PokemonModal"; // criaremos depois
+import PokemonModal from "../components/PokemonModal";
+import { fetchPokemonDetails } from "../services/pokemonService";
 
-/**
- * Home
- * Camada puramente visual.
- * Toda regra de negócio vive no hook.
- */
 export default function Home() {
-    const [selectedPokemon, setSelectedPokemon] = useState(null); // Pokémon clicado
-      const [showModal, setShowModal] = useState(false);
-  const [showAuth, setShowAuth] = useState(false);
-
-  const {
-    pokemons,
-    pagination,
-    loading,
-    page,
-    setPage,
-    limit,
-    setLimit,
-    search,
-    setSearch,
-    type,
-    setType
-  } = usePokemons();
+  const { pokemons, pagination, loading, page, setPage, limit, setLimit, search, setSearch, type, setType } = usePokemons();
 
   const [favorites, setFavorites] = useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem("token"));
+  const [showAuth, setShowAuth] = useState(false);
 
-    // Função para abrir modal
-  function handleOpenModal(pokemon) {
-    setSelectedPokemon(pokemon);
-    setShowModal(true);
-  }
+  const [selectedPokemon, setSelectedPokemon] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
-  // ============================
-  // 🔐 Estado de autenticação
-  // ============================
+  // ===== Favoritos =====
+  const toggleFavorite = async (pokemonId) => {
+    const token = localStorage.getItem("token");
+    if (!token) return setShowAuth(true);
 
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-  return !!localStorage.getItem("token");
-});
+    const method = favorites.includes(String(pokemonId)) ? "DELETE" : "POST";
+    const url = `http://localhost:3001/api/favorites${method === "DELETE" ? `/${pokemonId}` : "/add"}`;
 
-  function handleLoginSuccess() {
-    setIsAuthenticated(true);
-    setShowAuth(false);
-  }
+    const res = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: method === "POST" ? JSON.stringify({ pokemonId }) : undefined
+    });
 
-  function handleLogout() {
-    localStorage.removeItem("token");
-    setFavorites([]);
-    setIsAuthenticated(false);
-  }
-
-function openAuthModal() {
-  setShowAuth(true);
-}
-
-  function handleCloseModal() {
-    setSelectedPokemon(null);
-    setShowModal(false);
-  }
-
-
-  // ============================
-  // 🔐 Favoritos do usuário
-  // ============================
-  useEffect(() => {
-  const token = localStorage.getItem("token");
-  if (!token) return;
-
-  fetch("http://localhost:3001/api/favorites", {
-    headers: { Authorization: `Bearer ${token}` }
-  })
-    .then(res => res.json())
-    .then(data => setFavorites(Array.isArray(data) ? data : []))
-    .catch(() => setFavorites([]));
-}, []);
-
-
-  // ============================
-  // ⭐ Toggle favorito
-  // ============================
-  async function toggleFavorite(pokemonId) {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    setShowAuth(true);
-    return;
-  }
-
-  const isAlreadyFavorite = favorites.includes(String(pokemonId)); // ← usar string para consistência
-
-  try {
-    let response;
-
-    if (isAlreadyFavorite) {
-      // -----------------------------
-      // REMOVER FAVORITO
-      // -----------------------------
-      response = await fetch(`http://localhost:3001/api/favorites/${pokemonId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    } else {
-      // -----------------------------
-      // ADICIONAR FAVORITO
-      // -----------------------------
-      response = await fetch("http://localhost:3001/api/favorites/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ pokemonId }),
-      });
-    }
-
-    // Atualiza lista de favoritos com o que o backend retorna
-    const data = await response.json();
+    const data = await res.json();
     setFavorites(Array.isArray(data) ? data : []);
-  } catch (err) {
-    console.error("Erro ao atualizar favoritos:", err);
-  }
-}
+  };
 
+  // ===== Modal =====
+  const handleOpenModal = async (pokemon) => {
+    setSelectedPokemon({ ...pokemon, abilities: [], stats: {}, evolutions: [], loading: true });
+    setShowModal(true);
 
+    const detailedPokemon = await fetchPokemonDetails(pokemon.id);
+    setSelectedPokemon({ ...pokemon, ...detailedPokemon, loading: false });
+  };
 
-  // ⏳ Loading global
-  if (loading) {
-    return <p>Carregando Pokémons...</p>;
-  }
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedPokemon(null);
+  };
+
+  if (loading) return <p>Carregando Pokémons...</p>;
 
   return (
     <div>
-      {/* NAVBAR */}
       <Navbar
         searchText={search}
-        setSearchText={value => setSearch(value)}
-        setFilterType={value => setType(value)}
+        setSearchText={setSearch}
+        setFilterType={setType}
         limit={limit}
-        setLimit={value => setLimit(Number(value))}
-        onLoginClick={openAuthModal}
+        setLimit={setLimit}
+        onLoginClick={() => setShowAuth(true)}
         isAuthenticated={isAuthenticated}
-        onLogoutClick={handleLogout}
+        onLogoutClick={() => { localStorage.removeItem("token"); setFavorites([]); setIsAuthenticated(false); }}
       />
 
-      {/* MODAL DE LOGIN / REGISTRO */}
-      {showAuth && (
-  <AuthModal
-    onClose={() => setShowAuth(false)}
-    onLoginSuccess={handleLoginSuccess}
-  />
-)}
+      {showAuth && <AuthModal onClose={() => setShowAuth(false)} onLoginSuccess={() => setIsAuthenticated(true)} />}
 
-
-      {/* GRID */}
       <div className="grid-container">
-        {pokemons.length === 0 && !loading && (
-          <p style={{ textAlign: "center", width: "100%" }}>
-            Nenhum Pokémon encontrado.
-          </p>
-        )}
-
         {pokemons.map(pokemon => (
           <PokemonCard
             key={pokemon.id}
             pokemon={pokemon}
             isFavorite={favorites.includes(String(pokemon.id))}
             onToggleFavorite={toggleFavorite}
-            onClick={() => handleOpenModal(pokemon)} // passar clique
+            onClick={() => handleOpenModal(pokemon)}
           />
         ))}
       </div>
 
-      {/* MODAL */}
       {showModal && selectedPokemon && (
-        <PokemonModal
-          pokemon={selectedPokemon}
-          onClose={handleCloseModal}
-        />
+        <PokemonModal pokemon={selectedPokemon} onClose={handleCloseModal} />
       )}
 
-      {/* PAGINAÇÃO */}
       <div className="pagination">
-        <button
-          disabled={page === 1}
-          onClick={() => setPage(page - 1)}
-        >
-          Anterior
-        </button>
-
-        <span>
-          Página {page} de {pagination.totalPages}
-        </span>
-
-        <button
-          disabled={page === pagination.totalPages}
-          onClick={() => setPage(page + 1)}
-        >
-          Próxima
-        </button>
+        <button disabled={page === 1} onClick={() => setPage(page - 1)}>Anterior</button>
+        <span>Página {page} de {pagination.totalPages}</span>
+        <button disabled={page === pagination.totalPages} onClick={() => setPage(page + 1)}>Próxima</button>
       </div>
     </div>
   );

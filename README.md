@@ -269,6 +269,7 @@ Frontend da Pokédex construída em **React**. Este projeto consome a API de Pok
 
 ## Estrutura do Projeto
 
+```
 src/
 ├── assets/ # Imagens e ícones (types, sprites, etc.)
 ├── components/ # Componentes reutilizáveis
@@ -292,7 +293,7 @@ src/
 │ └── typeIcons.js
 ├── App.jsx
 └── main.jsx
-
+```
 
 ---
 

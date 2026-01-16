@@ -3,13 +3,13 @@ import typeIcons from "../utils/typeIcons";
 import "../styles/types.css";
 
 
-export default function PokemonCard({ pokemon, isFavorite, onToggleFavorite }) {
+export default function PokemonCard({ pokemon, isFavorite, onToggleFavorite, onClick }) {
   return (
-    <div className={`pokemon-card`}>
-      {/* Número do Pokémon */}
+    <div className="pokemon-card" onClick={onClick}>
+      {/* Número */}
       <span className="pokemon-id">#{pokemon.id}</span>
 
-      {/* Tipos no canto superior direito */}
+      {/* Tipos */}
       <div className="pokemon-types">
         {pokemon.types.map(type => (
           <img
@@ -22,17 +22,20 @@ export default function PokemonCard({ pokemon, isFavorite, onToggleFavorite }) {
         ))}
       </div>
 
-      {/* Sprite do Pokémon */}
+      {/* Sprite */}
       <div className="pokemon-image">
         <img src={pokemon.sprite} alt={pokemon.name} />
       </div>
 
-      {/* Rodapé: Nome + estrela de favorito */}
+      {/* Rodapé */}
       <div className="pokemon-footer">
         <h3 className="pokemon-name">{pokemon.name}</h3>
         <button
           className={`favorite-btn ${isFavorite ? "active" : ""}`}
-          onClick={() => onToggleFavorite(pokemon.id)}
+          onClick={(e) => { 
+            e.stopPropagation(); // impede abrir modal ao clicar na estrela
+            onToggleFavorite(pokemon.id);
+          }}
         >
           {isFavorite ? "★" : "☆"}
         </button>
@@ -40,3 +43,4 @@ export default function PokemonCard({ pokemon, isFavorite, onToggleFavorite }) {
     </div>
   );
 }
+

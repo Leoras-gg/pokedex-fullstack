@@ -3,6 +3,7 @@ import { usePokemons } from "../hooks/usePokemons";
 import Navbar from "../components/Navbar";
 import AuthModal from "../components/AuthModal";
 import PokemonCard from "../components/PokemonCard";
+import PokemonModal from "../components/PokemonModal"; // criaremos depois
 
 /**
  * Home
@@ -10,6 +11,8 @@ import PokemonCard from "../components/PokemonCard";
  * Toda regra de negócio vive no hook.
  */
 export default function Home() {
+    const [selectedPokemon, setSelectedPokemon] = useState(null); // Pokémon clicado
+      const [showModal, setShowModal] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
 
   const {
@@ -27,6 +30,12 @@ export default function Home() {
   } = usePokemons();
 
   const [favorites, setFavorites] = useState([]);
+
+    // Função para abrir modal
+  function handleOpenModal(pokemon) {
+    setSelectedPokemon(pokemon);
+    setShowModal(true);
+  }
 
   // ============================
   // 🔐 Estado de autenticação
@@ -50,6 +59,11 @@ export default function Home() {
 function openAuthModal() {
   setShowAuth(true);
 }
+
+  function handleCloseModal() {
+    setSelectedPokemon(null);
+    setShowModal(false);
+  }
 
 
   // ============================
@@ -159,9 +173,18 @@ function openAuthModal() {
             pokemon={pokemon}
             isFavorite={favorites.includes(String(pokemon.id))}
             onToggleFavorite={toggleFavorite}
+            onClick={() => handleOpenModal(pokemon)} // passar clique
           />
         ))}
       </div>
+
+      {/* MODAL */}
+      {showModal && selectedPokemon && (
+        <PokemonModal
+          pokemon={selectedPokemon}
+          onClose={handleCloseModal}
+        />
+      )}
 
       {/* PAGINAÇÃO */}
       <div className="pagination">

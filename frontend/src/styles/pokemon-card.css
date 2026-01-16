@@ -38,10 +38,10 @@
 
 .type-icon {
   width: 46px;
-  height: 44px;
+  height: 40px;
   border-radius: 50%;
   background: #eee;
-  padding: 4px;
+  padding: 6px;
   transition: transform 0.2s, filter 0.2s;
 }
 
@@ -56,12 +56,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .pokemon-image img {
-  max-width: 120px;
-  max-height: 120px;
+  max-width: 180x;
+  max-height: 180px;
 }
 
 /* Rodapé: Nome + estrela */

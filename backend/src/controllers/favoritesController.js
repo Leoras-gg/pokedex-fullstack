@@ -58,6 +58,8 @@ export const addFavorite = async (req, res) => {
 
 
 export const removeFavorite = async (req, res) => {
+  console.log("User no controller:", req.user);
+  console.log("Favorites atuais para REMOVER:", req.user.favorites);
   try {
     const id = String(req.params.id);
 
